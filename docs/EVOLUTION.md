@@ -1,8 +1,10 @@
-# How SwarmSort evolves
+# How WasteSense evolves
 
-SwarmSort is built in generations. Each generation has one clear goal and ends with a result, a list of problems and a reason to start the next one. This file keeps that history in one place, so anyone (a classmate, an examiner, or us later) can see what was tried, what went wrong and why the project changed direction.
+WasteSense is built in generations. Each generation has one clear goal and ends with a result, a list of problems and a reason to start the next one. This file keeps that history in one place, so anyone (a classmate, an examiner, or us later) can see what was tried, what went wrong and why the project changed direction.
 
 The full write-up of the finished work is in the [README](../README.md). Ideas that are not yet scheduled are in [FUTURE_WORK.md](FUTURE_WORK.md).
+
+> **Name change (2026-11-02):** the project was called *SwarmSort* until 2 November 2026 and is now *WasteSense*; the GitHub repository moved to https://github.com/Shreyansh303/WasteSense (the old URL redirects). Result files keep the paths they were produced with (e.g. `/kaggle/working/SwarmSort/...`).
 
 ## Generations at a glance
 
@@ -47,7 +49,7 @@ Find out whether a hand-written Particle Swarm Optimizer (PSO) can choose better
 - **Proxy fitness:** 12 epochs on a stratified 40% subset of train, scored by val mAP@50. Before any search we checked that the proxy ranks configurations like a 40-epoch full-data run: Spearman ρ = 0.976 on 8 configurations, against a pass mark of 0.6 fixed in advance. See README: [Proxy fitness and its validation](../README.md#5-proxy-fitness-and-its-validation).
 - **Full training:** each arm's chosen settings trained once for 100 epochs with the same recipe (explicit SGD, seed 42, deterministic). See README: [Full training recipe](../README.md#6-full-training-recipe).
 - **Test:** the test split was used once, at the very end. A paired bootstrap (1,000 resamples of the 1,046 test images) gave 95% confidence intervals for each model and each difference.
-- **Delivered:** a Streamlit demo app with green/blue bin advice ([README: Demo app](../README.md#demo-app)) and a Word report (`report/SwarmSort_Report.docx`).
+- **Delivered:** a Streamlit demo app with green/blue bin advice ([README: Demo app](../README.md#demo-app)) and a Word report (`report/WasteSense_Report.docx`).
 
 ### Results
 
@@ -105,7 +107,7 @@ The domain-gap row is an observation from using the demo, not a measured result.
 
 ### What triggered Generation 2
 
-The domain gap. The goal of SwarmSort is to help sort real waste, but the Gen 1 models only work on photos that look like the training set. Tuning had already been shown to give no measurable gain on that data, so the next step is better data, not more tuning.
+The domain gap. The goal of WasteSense is to help sort real waste, but the Gen 1 models only work on photos that look like the training set. Tuning had already been shown to give no measurable gain on that data, so the next step is better data, not more tuning.
 
 ---
 

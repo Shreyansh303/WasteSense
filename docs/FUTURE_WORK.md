@@ -2,7 +2,7 @@
 
 Project history by generation, with dated decisions: [EVOLUTION.md](EVOLUTION.md).
 
-A running list of improvements to SwarmSort, grouped by area and roughly ordered by value for effort. Each item says what problem it addresses, so the list can double as the "future work" discussion in the report and viva.
+A running list of improvements to WasteSense, grouped by area and roughly ordered by value for effort. Each item says what problem it addresses, so the list can double as the "future work" discussion in the report and viva.
 
 **Why this list exists.** The three models reach about 0.67 test mAP@50 on images that look like the training data (mostly one or a few items on clean backgrounds). On cluttered real-world photos, such as a street with scattered litter, they mislabel small items (crumpled polythene and cans shown as GLASS at 0.35–0.50 confidence), and the three models disagree with each other. Most items below target this domain gap.
 

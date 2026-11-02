@@ -1,6 +1,6 @@
 # Generation 2 Kaggle notebooks
 
-These eight notebooks run SwarmSort Generation 2 on Kaggle from start to finish:
+These eight notebooks run WasteSense Generation 2 on Kaggle from start to finish:
 
 1. build the merged 7-class dataset (TACO + HITL + a Gen 1 subsample + optional DWSD);
 2. train Arm A (the Ultralytics defaults);
@@ -10,7 +10,7 @@ These eight notebooks run SwarmSort Generation 2 on Kaggle from start to finish:
 6. compare Gen 1 and Gen 2 (all six arms) on the same real-world and studio test images, on the 6 shared classes.
 
 The recipe is the same as Gen 1, with two changes: images are 640 px and there are 7 classes (Gen 1's six plus OTHER).
-Every notebook clones `https://github.com/Shreyansh303/SwarmSort` (branch main). **Push all local commits before you
+Every notebook clones `https://github.com/Shreyansh303/WasteSense` (branch main). **Push all local commits before you
 start**, so the clone has the current `src/` and `configs/gen2/`.
 
 ## Run order
@@ -61,13 +61,13 @@ The two freezes cost about 24 GPU hours; see "Freeze protection" below. The part
 | Notebook | Accelerator | Attach as input | Produces (in the Output tab) |
 |---|---|---|---|
 | `g2_0_build_dataset` | None (CPU) | datasets `kneroma/tacotrashdataset`, `humansintheloop/recycling-dataset`, `viswaprakash1990/garbage-detection`, and your private DWSD dataset (optional) | `gen2_data/` (images, labels, lists, `data.yaml`, `data_test_<domain>.yaml`, `split.csv`, `build_report.json`) and `gen2_check.jpg` |
-| `g2_1_arm_a` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to continue a stopped run, an earlier version of itself) | `SwarmSort/results/gen2/arm_a.json`, `arm_a_epochs.csv`, `gen2_arm_a_best.pt` |
-| `g2_2_search_pso` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to resume, an earlier version of itself) | `SwarmSort/results/gen2/search_pso.json`, `best_pso.json` |
-| `g2_3_search_random` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to resume, an earlier version of itself) | `SwarmSort/results/gen2/search_random.json`, `best_random.json` |
-| `g2_4_arm_b` | GPU T4 x2 | output of `g2_0_build_dataset`, plus `g2_3_search_random` if `best_random.json` is not committed (and, to continue a stopped run, an earlier version of itself) | `SwarmSort/results/gen2/arm_b.json`, `arm_b_epochs.csv`, `gen2_arm_b_best.pt` |
-| `g2_5_arm_c` | GPU T4 x2 | output of `g2_0_build_dataset`, plus `g2_2_search_pso` if `best_pso.json` is not committed (and, to continue a stopped run, an earlier version of itself) | `SwarmSort/results/gen2/arm_c.json`, `arm_c_epochs.csv`, `gen2_arm_c_best.pt` |
-| `g2_6_evaluate` | GPU T4 x2 | outputs of `g2_0_build_dataset`, `g2_1_arm_a`, `g2_4_arm_b`, `g2_5_arm_c`, and your private DWSD dataset (optional, if the g2_0 build has no India test set) | `SwarmSort/results/gen2/test_<tag>_results.json`, `test_<tag>_comparison.md`, `test_domains.md`, `plots/`, and `build_report_india.json` if DWSD was built there |
-| `g2_7_gen1_vs_gen2` | GPU T4 x2 | outputs of `g2_0_build_dataset`, `g2_1_arm_a`, `g2_4_arm_b`, `g2_5_arm_c` (the Gen 1 weights come with the clone, `app/models/`) | `SwarmSort/results/gen2/test_g1g2_{real_world,studio}_results.json`, `test_g1g2_{real_world,studio}_comparison.md`, `test_g1g2_summary.md`, `plots/test_g1g2_*` |
+| `g2_1_arm_a` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to continue a stopped run, an earlier version of itself) | `WasteSense/results/gen2/arm_a.json`, `arm_a_epochs.csv`, `gen2_arm_a_best.pt` |
+| `g2_2_search_pso` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to resume, an earlier version of itself) | `WasteSense/results/gen2/search_pso.json`, `best_pso.json` |
+| `g2_3_search_random` | GPU T4 x2 | output of `g2_0_build_dataset` (and, to resume, an earlier version of itself) | `WasteSense/results/gen2/search_random.json`, `best_random.json` |
+| `g2_4_arm_b` | GPU T4 x2 | output of `g2_0_build_dataset`, plus `g2_3_search_random` if `best_random.json` is not committed (and, to continue a stopped run, an earlier version of itself) | `WasteSense/results/gen2/arm_b.json`, `arm_b_epochs.csv`, `gen2_arm_b_best.pt` |
+| `g2_5_arm_c` | GPU T4 x2 | output of `g2_0_build_dataset`, plus `g2_2_search_pso` if `best_pso.json` is not committed (and, to continue a stopped run, an earlier version of itself) | `WasteSense/results/gen2/arm_c.json`, `arm_c_epochs.csv`, `gen2_arm_c_best.pt` |
+| `g2_6_evaluate` | GPU T4 x2 | outputs of `g2_0_build_dataset`, `g2_1_arm_a`, `g2_4_arm_b`, `g2_5_arm_c`, and your private DWSD dataset (optional, if the g2_0 build has no India test set) | `WasteSense/results/gen2/test_<tag>_results.json`, `test_<tag>_comparison.md`, `test_domains.md`, `plots/`, and `build_report_india.json` if DWSD was built there |
+| `g2_7_gen1_vs_gen2` | GPU T4 x2 | outputs of `g2_0_build_dataset`, `g2_1_arm_a`, `g2_4_arm_b`, `g2_5_arm_c` (the Gen 1 weights come with the clone, `app/models/`) | `WasteSense/results/gen2/test_g1g2_{real_world,studio}_results.json`, `test_g1g2_{real_world,studio}_comparison.md`, `test_g1g2_summary.md`, `plots/test_g1g2_*` |
 
 Every notebook ends with a "Files to download / where they go locally" table. In short, everything goes into the
 local `results/gen2/`, except `split.csv`, which goes to `configs/gen2/split.csv`. A `.pt` file downloads as a `.zip`:

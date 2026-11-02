@@ -1,4 +1,4 @@
-# SwarmSort research paper: outline, gap analysis and flow
+# WasteSense research paper: outline, gap analysis and flow
 
 Status: draft outline for review (updated 2026-10-11). Target: journal article in LaTeX; the journal is not chosen yet. Gen 2 test results are filled in (from `results/gen2/test_*`). Only the Gen 1 vs Gen 2 comparison is still running, and it is marked **[PENDING G1 vs G2]**.
 
@@ -6,12 +6,12 @@ Status: draft outline for review (updated 2026-10-11). Target: journal article i
 
 ## 1. Title
 
-**Chosen (2026-10-11):** *SwarmSort: A Fair Evaluation of Particle Swarm Hyperparameter Optimization for YOLOv8 Waste Detection Across Studio, Real-World, and Indian Data* (American spelling, as IEEE uses). Author: Shreyansh Jain. Format: IEEE journal style (IEEEtran, two columns), LaTeX, 10–15 pages.
+**Chosen (2026-10-11):** *WasteSense: A Fair Evaluation of Particle Swarm Hyperparameter Optimization for YOLOv8 Waste Detection Across Studio, Real-World, and Indian Data* (American spelling, as IEEE uses). Author: Shreyansh Jain. Format: IEEE journal style (IEEEtran, two columns), LaTeX, 10–15 pages.
 
 Options that were considered:
 
 1. *Does swarm tuning pay off? An equal-budget comparison of particle swarm optimisation, random search and default hyperparameters for lightweight waste detection, from studio to real-world and Indian scenes*
-2. *SwarmSort: a fair evaluation of particle swarm hyperparameter optimisation for YOLOv8 waste detection across studio, real-world and Indian data*
+2. *WasteSense: a fair evaluation of particle swarm hyperparameter optimisation for YOLOv8 waste detection across studio, real-world and Indian data*
 3. *Particle swarm optimisation versus random search for training a lightweight waste detector: an equal-budget study with real-world and Indian test sets*
 
 ## 2. The story in one paragraph
@@ -29,7 +29,7 @@ The gaps below come from 44 references, each confirmed to exist via Crossref or 
   - Several "detection" papers still use near-single-object data: Melinte et al. 2020 boxes TrashNet photos; Kumar et al. 2021; UGV-NBWASTE averages about 1.1 objects per image.
 - **Counter-evidence (we state it):** multi-object waste detection exists, mainly in CV and robotics venues: TACO, ZeroWaste†, UAVVaste, PlastOPol, TrashCan, FloW†, WaRP†, and the base paper (Majchrowska et al. 2022).
 - **Final wording:** *"Waste recognition for sorting is dominated by single-label classification of one object on a plain background; multi-object detection in cluttered scenes is a smaller strand, and several detection studies still rely on single-object studio images."*
-- **How SwarmSort addresses it:** multi-object detection (YOLOv8n) on cluttered studio and real-world scenes, with 7 material classes.
+- **How WasteSense addresses it:** multi-object detection (YOLOv8n) on cluttered studio and real-world scenes, with 7 material classes.
 
 ### G2. Optimisation gap: swarm tuning has not been applied to waste *detectors*
 - **Evidence:**
@@ -38,7 +38,7 @@ The gaps below come from 44 references, each confirmed to exist via Crossref or 
   - Every waste-detection paper read in full used default, published or hand-set hyperparameters, or a tuning step it does not describe: Majchrowska, PlastOPol, UAVVaste, TrashCan, MJU-Waste, Fulton, Melinte, Kumar, Liao & Juang, Bartolo.
   - Fang et al. mention PSO/GA only for routing and prediction, not for vision models.
 - **Final wording:** *"In the literature we reviewed, no waste detector had its training hyperparameters tuned by a swarm optimiser; detection studies used default or hand-set values, or a tuning step they do not describe."*
-- **How SwarmSort addresses it:** a hand-written PSO tunes 6 training hyperparameters (lr0, lrf, momentum, weight decay, mosaic, scale) of a waste detector.
+- **How WasteSense addresses it:** a hand-written PSO tunes 6 training hyperparameters (lr0, lrf, momentum, weight decay, mosaic, scale) of a waste detector.
 
 ### G3. Evidence gap: tuning claims lack fair baselines and uncertainty estimates
 - **Evidence:**
@@ -47,7 +47,7 @@ The gaps below come from 44 references, each confirmed to exist via Crossref or 
   - None of the 10 waste-detection papers read in full reports repeated runs, confidence intervals or significance tests. Bartolo et al. state that statistics were not applicable; Kumar et al. report the best value on the split also used for testing.
 - **Counter-evidence (we state it):** Sayed does compare optimisers at an equal budget and does test significance on the search fitness, so we do **not** claim that nobody compares optimisers.
 - **Final wording:** *"Metaheuristic tuning in this area is compared against other metaheuristics or against nothing; we found no comparison with random search, which Bergstra & Bengio (2012) showed to be a strong baseline, at an equal evaluation budget, and test results are reported as single numbers without confidence intervals."*
-- **How SwarmSort addresses it:** three arms (defaults, random search, PSO) at an equal budget of 32 proxy trainings; a proxy-validity check fixed before the run (ρ = 0.976); a test split used once; paired-bootstrap 95% CIs on every difference.
+- **How WasteSense addresses it:** three arms (defaults, random search, PSO) at an equal budget of 32 proxy trainings; a proxy-validity check fixed before the run (ρ = 0.976); a test split used once; paired-bootstrap 95% CIs on every difference.
 
 ### G4. Generalisation gap: little studio-to-real testing, and no Indian detection benchmark
 - **Evidence:**
@@ -57,10 +57,10 @@ The gaps below come from 44 references, each confirmed to exist via Crossref or 
   - India: DWSD (Ali et al. 2025, Kolkata) reports segmentation pixel accuracy only. Kumar et al. 2021 use mostly clean self-collected images and no separate test split. AquaVision† uses TACO-derived data, and SpotGarbage† (2016) does garbage-region segmentation. We found no Indian real-world waste test set with published detection baselines.
 - **Counter-evidence (we state it):** cross-domain tests do exist (Bartolo et al. 2025, a workshop paper; Fulton et al. 2019, test footage shifted in time and place). South Asian detection data exist: UGV-NBWASTE (Bangladesh, no baselines) and pLitterStreet† (Sri Lanka and others, preprint).
 - **Final wording:** *"Studio-to-real-world and cross-dataset evaluation is rare and recent, and we found no Indian real-world waste test set with published object-detection baselines."*
-- **How SwarmSort addresses it:** Gen 2 trains on studio and real-world data (TACO, HITL), reports studio, real-world and India (DWSD, test-only) results separately, and gives the first detection numbers on DWSD that we know of: every arm scores only 0.023–0.027 mAP@50, which exposes a large domain gap. DWSD's mask-derived boxes merge touching items, so part of that gap is a labelling mismatch; the paper must say this.
+- **How WasteSense addresses it:** Gen 2 trains on studio and real-world data (TACO, HITL), reports studio, real-world and India (DWSD, test-only) results separately, and gives the first detection numbers on DWSD that we know of: every arm scores only 0.023–0.027 mAP@50, which exposes a large domain gap. DWSD's mask-derived boxes merge touching items, so part of that gap is a labelling mismatch; the paper must say this.
 
 ### Observation O5 (framed as a contribution, not as a literature gap)
-Every applied paper we read reports its method as an improvement. Sayed et al. call their optimiser best on all metrics even though one comparison is not significant. Clear null results on tuning were not found, which is evidence of absence only, so we do not claim a gap. **SwarmSort reports null and negative results** (the Gen 1 tie; PSO ≈ random search in Gen 2; no gain on real-world photos; failure on Indian photos) **and explains them.**
+Every applied paper we read reports its method as an improvement. Sayed et al. call their optimiser best on all metrics even though one comparison is not significant. Clear null results on tuning were not found, which is evidence of absence only, so we do not claim a gap. **WasteSense reports null and negative results** (the Gen 1 tie; PSO ≈ random search in Gen 2; no gain on real-world photos; failure on Indian photos) **and explains them.**
 
 ### Table 1: literature comparison matrix (goes in Section 2.5)
 
@@ -84,7 +84,7 @@ Abbreviations: Cls = classification, Det = detection, Seg = segmentation, RS = r
 | Liao & Juang 2022 | Det | Aerial, coastal | "Tuned", method n.r. | None | No | Qualitative, new sites | No |
 | Bartolo et al. 2025 | Det | Aerial | Manual | None | 1 / no | Yes | No |
 | Ali et al. 2025 (DWSD) | Seg (dataset) | Real-world | n.r. | — | 1 / no | No | Yes |
-| **SwarmSort (ours)** | **Det (7 classes)** | **Studio + real-world** | **PSO vs RS vs defaults** | **Equal budget, 32 proxy trainings each** | **1 training seed / paired-bootstrap 95% CIs** | **Yes: studio, real-world, India** | **Yes (DWSD test)** |
+| **WasteSense (ours)** | **Det (7 classes)** | **Studio + real-world** | **PSO vs RS vs defaults** | **Equal budget, 32 proxy trainings each** | **1 training seed / paired-bootstrap 95% CIs** | **Yes: studio, real-world, India** | **Yes (DWSD test)** |
 
 Note: our "1 training seed" is stated openly in the matrix and in Limitations.
 

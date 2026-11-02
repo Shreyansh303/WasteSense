@@ -1,8 +1,8 @@
-# SwarmSort
+# WasteSense
 
 **Waste detection in studio and real-world photos with YOLOv8n, its training hyperparameters tuned by a hand-written Particle Swarm Optimizer (PSO), built and tested in two generations.**
 
-Show SwarmSort a photo of waste and it draws a box around every item, names it (biodegradable, cardboard, glass, metal, paper, plastic or other) and tells you which bin it goes in: green for wet waste, blue for dry recyclables, reject for the rest. Behind the demo is a controlled experiment, run twice: can a swarm optimizer train a better detector than the default settings or plain random search? Generation 1 asked this on a clean studio dataset. Generation 2 asked it again on real-world litter photos, and measured how much the new data helped.
+Show WasteSense a photo of waste and it draws a box around every item, names it (biodegradable, cardboard, glass, metal, paper, plastic or other) and tells you which bin it goes in: green for wet waste, blue for dry recyclables, reject for the rest. Behind the demo is a controlled experiment, run twice: can a swarm optimizer train a better detector than the default settings or plain random search? Generation 1 asked this on a clean studio dataset. Generation 2 asked it again on real-world litter photos, and measured how much the new data helped.
 
 ![Python 3.13](https://img.shields.io/badge/python-3.13-3776AB)
 ![Ultralytics 8.4.169](https://img.shields.io/badge/ultralytics-8.4.169-111F68)
@@ -11,7 +11,7 @@ Show SwarmSort a photo of waste and it draws a box around every item, names it (
 ![Generations](https://img.shields.io/badge/generations-2-6A1B9A)
 
 <p align="center">
-  <img src="docs/images/app_green.jpg" alt="The SwarmSort demo app: a test image of vegetables with 16 BIODEGRADABLE boxes, all sent to the green bin" width="760">
+  <img src="docs/images/app_green.jpg" alt="The WasteSense demo app: a test image of vegetables with 16 BIODEGRADABLE boxes, all sent to the green bin" width="760">
 </p>
 
 *Soft Computing course project, Semester V, Unit V: swarm intelligence. (Screenshot from the Generation 1 app; the current app adds a generation switch and a reject bin.)*
@@ -61,9 +61,9 @@ Show SwarmSort a photo of waste and it draws a box around every item, names it (
 
 **Why PSO.** All six hyperparameters we tune are continuous, and each evaluation is a training run, so we can afford only a few dozen. PSO works directly on real-valued vectors (a move is just a vector addition), has only three main settings (w, c1, c2) with well-known values, and lets every evaluation steer the next round. It is also the swarm-intelligence method studied in Unit V.
 
-**The gap in the base paper.** Our base paper, Majchrowska et al. (2022), detects waste in natural and urban scenes with a two-stage pipeline: an EfficientDet-D2 detector finds the litter, then a separate EfficientNet-B2 classifier labels each item, with hand-chosen hyperparameters. SwarmSort uses a single-stage detector that finds and classifies in one pass, and tests whether a systematic search improves its hyperparameters.
+**The gap in the base paper.** Our base paper, Majchrowska et al. (2022), detects waste in natural and urban scenes with a two-stage pipeline: an EfficientDet-D2 detector finds the litter, then a separate EfficientNet-B2 classifier labels each item, with hand-chosen hyperparameters. WasteSense uses a single-stage detector that finds and classifies in one pass, and tests whether a systematic search improves its hyperparameters.
 
-| | Majchrowska et al. (2022) | SwarmSort |
+| | Majchrowska et al. (2022) | WasteSense |
 |---|---|---|
 | Pipeline | Two-stage: detector + classifier | Single-stage YOLOv8n |
 | Hyperparameters | Chosen by hand | Tuned by PSO, compared with defaults and random search at an equal budget |
@@ -441,7 +441,7 @@ The Streamlit app opens in the browser. It works from a fresh clone, because all
 ## Repository structure
 
 ```
-SwarmSort/
+WasteSense/
 ├── app/
 │   ├── app.py                 Streamlit demo app (generation switch, model, thresholds)
 │   ├── helpers.py             generations, BIN_RULES, image handling, inference, drawing
@@ -456,7 +456,7 @@ SwarmSort/
 ├── docs/
 │   ├── EVOLUTION.md           both generations: data, method, results, problems, lessons
 │   ├── FUTURE_WORK.md         improvement list with status
-│   ├── RELATED_WORK.md        papers for the research paper and the gaps SwarmSort fills
+│   ├── RELATED_WORK.md        papers for the research paper and the gaps WasteSense fills
 │   └── images/                diagrams and screenshots used in this README
 ├── notebooks/
 │   ├── phase*.ipynb           Gen 1 Kaggle notebooks (Phases 2, 4 and 5)
@@ -487,7 +487,7 @@ SwarmSort/
 │   └── watchdog_run.py        Kaggle freeze protection: local data copy, stall watchdog with retry
 ├── tests/                     unittest: app, build_dataset, compare_generations, evaluate, plot_search,
 │                              pso, resume, search, watchdog
-├── report/SwarmSort_Report.docx   the Generation 1 project report
+├── report/WasteSense_Report.docx   the Generation 1 project report
 ├── paper/                     research paper (LaTeX sources, figures and their scripts)
 └── requirements.txt
 ```
@@ -495,8 +495,8 @@ SwarmSort/
 ## Quick start
 
 ```bash
-git clone https://github.com/Shreyansh303/SwarmSort.git
-cd SwarmSort
+git clone https://github.com/Shreyansh303/WasteSense.git
+cd WasteSense
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt     # on Linux/macOS: .venv/bin/python
 
@@ -664,7 +664,7 @@ The full list, with effort and status: [docs/FUTURE_WORK.md](docs/FUTURE_WORK.md
 8. P. F. Proença and P. Simões, "TACO: Trash Annotations in Context for litter detection," arXiv:2003.06975, 2020.
 9. Ali et al., Dense Waste Segmentation Dataset (DWSD), *Data in Brief*, 2025 (PMC11848783). Its published class table does not match the masks; see [docs/EVOLUTION.md](docs/EVOLUTION.md).
 
-More papers, and the gaps SwarmSort fills: [docs/RELATED_WORK.md](docs/RELATED_WORK.md).
+More papers, and the gaps WasteSense fills: [docs/RELATED_WORK.md](docs/RELATED_WORK.md).
 
 **Datasets:**
 
@@ -680,4 +680,4 @@ More papers, and the gaps SwarmSort fills: [docs/RELATED_WORK.md](docs/RELATED_W
 **Shreyansh Jain** ([@Shreyansh303](https://github.com/Shreyansh303))
 Soft Computing course project, Semester V (Unit V: swarm intelligence).
 
-**Documents:** the Generation 1 project report, [report/SwarmSort_Report.docx](report/SwarmSort_Report.docx), and the research paper covering both generations, [paper/](paper/) (LaTeX sources in [paper/main.tex](paper/main.tex)).
+**Documents:** the Generation 1 project report, [report/WasteSense_Report.docx](report/WasteSense_Report.docx), and the research paper covering both generations, [paper/](paper/) (LaTeX sources in [paper/main.tex](paper/main.tex)).
