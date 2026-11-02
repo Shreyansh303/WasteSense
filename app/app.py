@@ -1,4 +1,4 @@
-"""SwarmSort demo: find waste items in a photo and say which bin each one goes in.
+"""WasteSense demo: find waste items in a photo and say which bin each one goes in.
 
 Run from the repo root:
     .venv/Scripts/python -m streamlit run app/app.py
@@ -14,7 +14,7 @@ import streamlit as st
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # find helpers.py however the app is started
 import helpers as h  # noqa: E402
 
-st.set_page_config(page_title="SwarmSort", page_icon="♻️", layout="wide")
+st.set_page_config(page_title="WasteSense", page_icon="♻️", layout="wide")
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ def show_result(data, title, model, conf, iou, imgsz):
 def about(results_by_gen, domain_results):
     with st.expander("About this project"):
         st.markdown(
-            "SwarmSort finds waste items in a photo and says which bin each one belongs in. "
+            "WasteSense finds waste items in a photo and says which bin each one belongs in. "
             "It uses YOLOv8n, a small real-time object detector. "
             "How well a detector learns depends on training hyperparameters such as the learning rate, momentum "
             "and data augmentation, which are usually left at their defaults. "
@@ -161,7 +161,7 @@ def main():
     domain_results = h.load_domain_results()
     gen, label, conf, iou = sidebar(results_by_gen)
 
-    st.title("♻️ SwarmSort")
+    st.title("♻️ WasteSense")
     st.caption("YOLOv8n waste detector, comparing default, random-search and PSO-tuned training settings: "
                "show it a photo and it tells you which bin each item goes in "
                "(green = wet / compost, blue = dry recyclables, reject = non-recyclable).")

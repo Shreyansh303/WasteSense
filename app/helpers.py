@@ -1,4 +1,4 @@
-"""Pure helpers of the SwarmSort demo app: generations, bin rules, image handling, inference, drawing, tables.
+"""Pure helpers of the WasteSense demo app: generations, bin rules, image handling, inference, drawing, tables.
 
 Nothing here imports Streamlit, so the unit tests can import this file directly. app/app.py builds the page.
 """
