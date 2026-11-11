@@ -32,13 +32,13 @@ OUT = REPO / "paper" / "figures"
 
 # Arm colors and labels shared by every figure of the paper.
 ARM = {
-    "A": {"label": "A: Defaults", "color": "#6b7280", "marker": "o"},
-    "B": {"label": "B: Random search", "color": "#2563eb", "marker": "^"},
-    "C": {"label": "C: PSO", "color": "#ea580c", "marker": "s"},
+    "A": {"label": "Defaults", "color": "#8c8c8c", "marker": "o", "hatch": ""},
+    "B": {"label": "Random search", "color": "#1f77b4", "marker": "^", "hatch": "///"},
+    "C": {"label": "PSO", "color": "#d62728", "marker": "s", "hatch": "..."},
 }
-INK = "#1f2937"  # text and neutral marks
-MUTED = "#6b7280"
-GRID = "#e5e7eb"
+INK = "black"  # text and neutral marks
+MUTED = "#555555"
+GRID = "#bbbbbb"
 COL_W = 3.5  # IEEE column width, inches
 PAGE_W = 7.16  # IEEE text width, inches
 
@@ -52,8 +52,14 @@ plt.rcParams.update({
     "xtick.labelsize": 8,
     "ytick.labelsize": 8,
     "legend.fontsize": 8,
-    "axes.edgecolor": MUTED,
-    "axes.linewidth": 0.6,
+    "axes.edgecolor": INK,
+    "axes.linewidth": 0.7,
+    "xtick.direction": "in",
+    "ytick.direction": "in",
+    "hatch.linewidth": 0.5,
+    "legend.edgecolor": INK,
+    "legend.fancybox": False,
+    "legend.framealpha": 1.0,
     "xtick.color": INK,
     "ytick.color": INK,
     "xtick.major.width": 0.6,
@@ -71,9 +77,7 @@ def load(path):
 
 
 def style_axes(ax, grid_axis="y"):
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    ax.grid(True, axis=grid_axis, color=GRID, linewidth=0.6)
+    ax.grid(True, axis=grid_axis, color=GRID, linewidth=0.5, linestyle=":")
     ax.set_axisbelow(True)
 
 
@@ -101,28 +105,25 @@ def fig_proxy():
     style_axes(ax, "both")
     lhs = [k for k, i in enumerate(ids) if i != "defaults"]
     ax.scatter(prox[lhs], med[lhs], s=30, facecolor="white", edgecolor=INK, linewidth=1.0, zorder=3,
-               label="LHS setting")
+               label="LHS settings")
     d = ids.index("defaults")
-    ax.scatter(prox[d], med[d], s=34, marker=ARM["A"]["marker"], color=ARM["A"]["color"], edgecolor="white",
-               linewidth=0.8, zorder=4, label="Ultralytics defaults")
-    # Label offsets in points. The defaults marker sits next to lhs4, so its label gets a leader line and cannot be
-    # read as the label of lhs4.
-    offsets = {"lhs1": (5, -3), "lhs2": (5, -9), "lhs3": (-24, 4), "lhs5": (5, -9), "lhs7": (-6, -12),
-               "lhs6": (-14, 6), "lhs4": (-6, 6)}
+    ax.scatter(prox[d], med[d], s=34, marker=ARM["A"]["marker"], color=INK, edgecolor=INK,
+               linewidth=0.8, zorder=4, label="Defaults")
+    # Label offsets in points.
+    offsets = {"lhs1": (5, -3), "lhs2": (5, -9), "lhs3": (-24, -3), "lhs5": (5, -9), "lhs7": (-6, -12),
+               "lhs6": (-8, -12), "lhs4": (-8, 7)}
     for k, i in enumerate(ids):
         if i == "defaults":
-            ax.annotate(i, (prox[k], med[k]), xytext=(4, -24), textcoords="offset points", fontsize=8, color=INK,
-                        arrowprops=dict(arrowstyle="-", color=MUTED, linewidth=0.6, shrinkA=0, shrinkB=3))
             continue
         dx, dy = offsets.get(i, (5, 3))
         ax.annotate(i, (prox[k], med[k]), xytext=(dx, dy), textcoords="offset points", fontsize=8, color=INK)
     ax.set_xlim(0.04, 0.54)
     ax.set_ylim(0.25, 0.68)
-    ax.set_xlabel("Proxy val mAP@50 (12 epochs, 40% of train)")
-    ax.set_ylabel("Medium val mAP@50\n(40 epochs, full train)")
+    ax.set_xlabel("Proxy val. mAP@50 (12 epochs)")
+    ax.set_ylabel("Val. mAP@50 after 40 epochs")
     ax.text(0.97, 0.06, rf"Spearman $\rho$ = {check['rho']:.3f}, $n$ = {check['n']}", transform=ax.transAxes,
             ha="right", va="bottom", fontsize=8)
-    ax.legend(loc="upper left", frameon=False, handletextpad=0.3, borderaxespad=0.2)
+    ax.legend(loc="upper left", frameon=True, handletextpad=0.3, borderaxespad=0.6)
     fig.savefig(OUT / "r_proxy.png")
     plt.close(fig)
 
@@ -174,8 +175,8 @@ def fig_convergence():
               f"{', rounds ' + str(rounds) if rounds else ''}); Spearman {r.statistic:.4f}, p {r.pvalue:.2e}")
 
     fig, axes = plt.subplots(1, 2, figsize=(PAGE_W, 2.45))
-    panels = (("(a) Generation 1: studio data, 6 classes, 416 px", "Gen 1", g1, (0.08, 0.565)),
-              ("(b) Generation 2: studio + real-world data, 7 classes, 640 px", "Gen 2", g2, (0.05, 0.378)))
+    panels = (("(a) Generation 1", "Gen 1", g1, (0.08, 0.565)),
+              ("(b) Generation 2", "Gen 2", g2, (0.05, 0.378)))
     for ax, (title, gen, logs, ylim) in zip(axes, panels):
         style_axes(ax)
         n = len(logs["C"]["evaluations"])
@@ -189,24 +190,23 @@ def fig_convergence():
         for arm in ("B", "C"):
             s = scores[(gen, arm)]
             x = np.arange(1, len(s) + 1)
-            ax.scatter(x, s, s=14, marker=ARM[arm]["marker"], color=ARM[arm]["color"], alpha=0.35, linewidths=0,
+            ax.scatter(x, s, s=14, marker=ARM[arm]["marker"], color=ARM[arm]["color"], alpha=0.4, linewidths=0,
                        zorder=3)
             bsf = np.maximum.accumulate(s)
-            ax.step(x, bsf, where="post", color=ARM[arm]["color"], linewidth=1.6, zorder=4)
+            ax.step(x, bsf, where="post", color=ARM[arm]["color"], linewidth=1.3, zorder=4)
         ax.set_xlim(0.5, n + 0.5)
         ax.set_ylim(*ylim)
         ax.set_xticks([1, 8, 16, 24, 32])
-        ax.set_xlabel("Evaluation (proxy training); dotted lines separate PSO rounds")
-        ax.set_title(title, loc="left", pad=4)
-    axes[0].set_ylabel("Proxy val mAP@50")
-    handles = [plt.Line2D([], [], color=ARM[a]["color"], marker=ARM[a]["marker"], markersize=5, linewidth=1.6,
-                          label=f"{ARM[a]['label']} (best: Gen 1 {scores[('Gen 1', a)].max():.4f}, "
-                                f"Gen 2 {scores[('Gen 2', a)].max():.4f})")
+        ax.set_xlabel("Evaluation number")
+        ax.set_title(title, pad=4)
+    axes[0].set_ylabel("Proxy val. mAP@50")
+    handles = [plt.Line2D([], [], color=ARM[a]["color"], marker=ARM[a]["marker"], markersize=4, linewidth=1.3,
+                          label={"B": "Random search (best so far)", "C": "PSO (best so far)"}[a])
                for a in ("B", "C")]
     handles.append(plt.Line2D([], [], color=ARM["A"]["color"], linestyle="--", linewidth=1.0,
-                              label=f"A: Defaults on the same proxy ({defaults:.4f}; Gen 1 only)"))
-    fig.legend(handles=handles, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, -0.04),
-               handlelength=2.2, columnspacing=1.4)
+                              label="Defaults"))
+    fig.legend(handles=handles, loc="lower center", ncol=3, frameon=True, bbox_to_anchor=(0.5, -0.03),
+               handlelength=2.2, columnspacing=1.6)
     fig.tight_layout(rect=(0, 0.08, 1, 1), w_pad=1.5)
     fig.savefig(OUT / "r_convergence.png")
     plt.close(fig)
@@ -219,32 +219,25 @@ def fig_gen1_per_class():
     test = load(RES / "test_results.json")
     classes = list(test["models"]["A"]["per_class"].keys())
     boxes = test["boxes_per_class"]
-    fig, ax = plt.subplots(figsize=(COL_W, 2.45))
-    style_axes(ax, "x")
-    y = np.arange(len(classes))[::-1]
+    fig, ax = plt.subplots(figsize=(COL_W, 2.4))
+    style_axes(ax)
+    x = np.arange(len(classes))
+    width = 0.26
     print("== Gen 1 per-class test AP@50")
-    for yi, c in zip(y, classes):
+    for c in classes:
         vals = [test["models"][a]["per_class"][c]["ap50"] for a in "ABC"]
         print(f"  {c:<14} " + "  ".join(f"{a} {v:.5f}" for a, v in zip("ABC", vals)))
-        ax.plot([min(vals), max(vals)], [yi, yi], color=GRID, linewidth=3.0, solid_capstyle="round", zorder=1)
-        # Small vertical dodge per arm so that near-equal values (e.g. METAL A/C, PAPER B/C) stay visible.
-        for (a, v), dy in zip(zip("ABC", vals), (0.2, 0.0, -0.2)):
-            ax.scatter(v, yi + dy, s=26, marker=ARM[a]["marker"], color=ARM[a]["color"], edgecolor="white",
-                       linewidth=0.6, zorder=3)
-        if c == "PLASTIC":
-            ax.annotate(f"{vals[2]:.3f}", (vals[2], yi - 0.2), xytext=(-5, -1), textcoords="offset points",
-                        ha="right", va="center", fontsize=8)
-            ax.annotate(f"{vals[0]:.3f}", (vals[0], yi + 0.2), xytext=(6, -1), textcoords="offset points",
-                        ha="left", va="center", fontsize=8)
-    ax.set_yticks(y)
-    ax.set_yticklabels([f"{c} ({boxes[c]:,})" for c in classes])
-    ax.set_xlim(0.56, 0.80)
-    ax.set_ylim(-0.6, len(classes) - 0.4)
-    ax.set_xlabel("Test AP@50 (studio test split, 1,046 images)")
-    handles = [plt.Line2D([], [], color=ARM[a]["color"], marker=ARM[a]["marker"], linestyle="none", markersize=5,
-                          label=ARM[a]["label"]) for a in "ABC"]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.4, 1.0), ncol=3, frameon=False,
-              handletextpad=0.2, columnspacing=1.0)
+    for j, a in enumerate("ABC"):
+        vals = [test["models"][a]["per_class"][c]["ap50"] for c in classes]
+        ax.bar(x + (j - 1) * width, vals, width, color=ARM[a]["color"], edgecolor=INK, linewidth=0.5,
+               hatch=ARM[a]["hatch"], label=ARM[a]["label"], zorder=2)
+    short = {"BIODEGRADABLE": "Biodeg.", "CARDBOARD": "Cardb."}
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"{short.get(c, c.capitalize())}\n({boxes[c]:,})" for c in classes], fontsize=7)
+    ax.set_ylim(0, 1.0)
+    ax.set_ylabel("Test AP@50")
+    ax.legend(loc="upper center", ncol=3, frameon=True, handlelength=1.2, handletextpad=0.4, columnspacing=1.0,
+              borderaxespad=0.5)
     fig.savefig(OUT / "r_gen1_per_class.png")
     plt.close(fig)
 
@@ -265,20 +258,21 @@ def fig_domains():
         ci = np.array([runs[t]["models"][a]["bootstrap"]["map50_ci95"] for t, _ in tags])
         err = np.vstack([vals - ci[:, 0], ci[:, 1] - vals])
         xs = x + (j - 1) * width
-        ax.bar(xs, vals, width, color=ARM[a]["color"], edgecolor="white", linewidth=0.8, label=ARM[a]["label"],
+        ax.bar(xs, vals, width, color=ARM[a]["color"], edgecolor=INK, linewidth=0.5, hatch=ARM[a]["hatch"],
+               label=ARM[a]["label"],
                zorder=2)
         ax.errorbar(xs, vals, yerr=err, fmt="none", ecolor=INK, elinewidth=0.7, capsize=1.6, capthick=0.7,
                     zorder=3)
         for xi, v, top in zip(xs, vals, ci[:, 1]):
-            ax.text(xi, top + 0.012, f"{v:.3f}", rotation=90, ha="center", va="bottom", fontsize=8)
+            ax.text(xi, top + 0.012, f"{v:.3f}", rotation=90, ha="center", va="bottom", fontsize=7)
         print(f"  {a}: " + "  ".join(f"{t} {v:.3f} [{lo:.3f}, {hi:.3f}]"
                                      for (t, _), v, (lo, hi) in zip(tags, vals, ci)))
     ax.set_xticks(x)
-    ax.set_xticklabels([f"{name}\n({runs[t]['images']:,} img.)" for t, name in tags])
+    ax.set_xticklabels([name for t, name in tags])
     ax.set_ylim(0, 0.85)
     ax.set_yticks(np.arange(0, 0.81, 0.2))
-    ax.set_ylabel("Test mAP@50 (95% CI)")
-    ax.legend(loc="upper right", frameon=False, handlelength=1.2, handletextpad=0.4, borderaxespad=0.1)
+    ax.set_ylabel("Test mAP@50")
+    ax.legend(loc="upper right", frameon=True, handlelength=1.2, handletextpad=0.4, borderaxespad=0.5)
     fig.savefig(OUT / "r_domains.png")
     plt.close(fig)
 
